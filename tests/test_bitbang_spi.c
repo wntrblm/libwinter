@@ -23,9 +23,9 @@ static uint8_t pull_byte() {
 TEST_CASE_BEGIN(init)
     /* Test with valid pins, makes sure GPIO is set properly. */
     struct WntrBitBangSPI spi = {
-        .sdo = (struct WntrGPIOPin){.port = 0, .pin = 1},
-        .sdi = (struct WntrGPIOPin){.port = 0, .pin = 2},
-        .sck = (struct WntrGPIOPin){.port = 0, .pin = 3},
+        .sdo = WNTR_GPIO_PIN(WNTR_PORT_A, 1),
+        .sdi = WNTR_GPIO_PIN(WNTR_PORT_A, 2),
+        .sck = WNTR_GPIO_PIN(WNTR_PORT_A, 3),
         .clock_polarity = 0,
     };
 
@@ -46,8 +46,8 @@ TEST_CASE_BEGIN(init)
 
     /* Test with invalid pins for SDI and SDO, shouldn't error but shouldn't set anything. */
     gpio_stub_reset();
-    spi.sdo = (struct WntrGPIOPin){.port = 0, .pin = 0};
-    spi.sdi = (struct WntrGPIOPin){.port = 0, .pin = 0};
+    spi.sdo = WNTR_GPIO_PIN(WNTR_PORT_A, 0);
+    spi.sdi = WNTR_GPIO_PIN(WNTR_PORT_A, 0);
 
     wntr_bitbang_spi_init(&spi, 100000);
 
@@ -59,9 +59,9 @@ TEST_CASE_BEGIN(write)
     gpio_stub_reset();
 
     struct WntrBitBangSPI spi = {
-        .sdo = (struct WntrGPIOPin){.port = 0, .pin = 1},
-        .sdi = (struct WntrGPIOPin){.port = 0, .pin = 2},
-        .sck = (struct WntrGPIOPin){.port = 0, .pin = 3},
+        .sdo = WNTR_GPIO_PIN(WNTR_PORT_A, 1),
+        .sdi = WNTR_GPIO_PIN(WNTR_PORT_A, 2),
+        .sck = WNTR_GPIO_PIN(WNTR_PORT_A, 3),
         .clock_polarity = 0,
     };
 

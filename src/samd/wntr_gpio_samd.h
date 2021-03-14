@@ -4,6 +4,12 @@
 
 /* Extra definitions needed by wntr_gpio for the SAM D21 */
 
+#define WNTR_PORT_A 0
+#define WNTR_PORT_B 1
+#define WNTR_PORT_C 2
+#define WNTR_PORT_D 3
+#define WNTR_PORT_E 4
+
 #define WNTR_PMUX_A PORT_PMUX_PMUXE_A_Val
 #define WNTR_PMUX_B PORT_PMUX_PMUXE_B_Val
 #define WNTR_PMUX_C PORT_PMUX_PMUXE_C_Val

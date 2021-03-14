@@ -20,18 +20,18 @@ static bool is_valid_pin_(struct WntrGPIOPin pin) { return !(pin.port == 0 && pi
 void wntr_bitbang_spi_init(struct WntrBitBangSPI* inst, uint32_t frequency) {
     /* Configure pins */
     if (is_valid_pin_(inst->sdo)) {
-        wntr_gpio_set_as_output(inst->sdo.port, inst->sdo.pin);
+        WntrGPIOPin_set_as_output(inst->sdo);
     }
     if (is_valid_pin_(inst->sdi)) {
-        wntr_gpio_set_as_input(inst->sdi.port, inst->sdi.pin, false);
+        WntrGPIOPin_set_as_input(inst->sdi, false);
     }
 
-    wntr_gpio_set_as_output(inst->sck.port, inst->sck.pin);
+    WntrGPIOPin_set_as_output(inst->sck);
 
     /*
         Drive the SCK line to the appropriate idle state.
     */
-    wntr_gpio_set(inst->sck.port, inst->sck.pin, inst->clock_polarity);
+    WntrGPIOPin_set(inst->sck, inst->clock_polarity);
 
     /*
         Calculate delay for the given SPI frequency. Since each byte involves
@@ -57,25 +57,25 @@ void wntr_bitbang_spi_transfer(struct WntrBitBangSPI* inst, const uint8_t* data_
 
         for (uint8_t bitmask = 0x80; bitmask; bitmask >>= 1) {
             bool out_bit = (out_byte & bitmask);
-            wntr_gpio_set(inst->sdo.port, inst->sdo.pin, out_bit);
+            WntrGPIOPin_set(inst->sdo, out_bit);
 
             if (inst->clock_phase == 0) {
                 wntr_delay_us(inst->_clock_delay);
-                wntr_gpio_set(inst->sck.port, inst->sck.pin, clock_leading);
+                WntrGPIOPin_set(inst->sck, clock_leading);
             } else {
-                wntr_gpio_set(inst->sck.port, inst->sck.pin, clock_leading);
+                WntrGPIOPin_set(inst->sck, clock_leading);
                 wntr_delay_us(inst->_clock_delay);
             }
 
-            if (is_valid_pin_(inst->sdi) && wntr_gpio_get(inst->sdi.port, inst->sdi.pin)) {
+            if (is_valid_pin_(inst->sdi) && WntrGPIOPin_get(inst->sdi)) {
                 in_byte |= bitmask;
             }
 
             if (inst->clock_phase == 0) {
                 wntr_delay_us(inst->_clock_delay);
-                wntr_gpio_set(inst->sck.port, inst->sck.pin, clock_trailing);
+                WntrGPIOPin_set(inst->sck, clock_trailing);
             } else {
-                wntr_gpio_set(inst->sck.port, inst->sck.pin, clock_trailing);
+                WntrGPIOPin_set(inst->sck, clock_trailing);
                 wntr_delay_us(inst->_clock_delay);
             }
         }
