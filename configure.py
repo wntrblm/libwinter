@@ -23,6 +23,7 @@ SRCS = [
     "src/wntr_error_correction.c",
     "src/wntr_midi_core.c",
     "src/wntr_sysex_dispatcher.c",
+    "src/wntr_bitbang_spi.c",
     "third_party/libfixmath/fix16_str.c",
     "third_party/libfixmath/fix16.c",
     "third_party/munit/munit.c",
@@ -39,6 +40,7 @@ DEFINES.update(
     dict(
         DEBUG=1,
         __SAMD21G18A__=1,
+        SAMD21=1,
     )
 )
 

@@ -13,7 +13,7 @@
 #define ARRAY_LEN(array) (sizeof(array) / sizeof(array[0]))
 
 #define TEST_CASE_BEGIN(name)                                                                                          \
-    MunitResult test_##name(const MunitParameter params[], void* data) {                                               \
+    static MunitResult test_##name(const MunitParameter params[], void* data) {                                        \
         (void)params;                                                                                                  \
         (void)data;
 
@@ -63,3 +63,4 @@ inline static void print_f16(const fix16_t val) {
 
 MunitSuite test_midi_core_suite;
 MunitSuite test_bezier_suite;
+MunitSuite test_bitbang_spi_suite;

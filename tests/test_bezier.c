@@ -4,7 +4,7 @@
     Full text available at: https://opensource.org/licenses/MIT
 */
 
-/* Tests for src/gem_voice_params.c */
+/* Tests for src/wntr_bezier.c */
 
 #include "fix16.h"
 #include "libwinter_test.h"

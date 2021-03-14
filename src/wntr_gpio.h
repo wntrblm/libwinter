@@ -17,6 +17,11 @@
 #include "wntr_gpio_samd.h"
 #endif
 
+struct WntrGPIOPin {
+    uint8_t port;
+    uint8_t pin;
+};
+
 void wntr_gpio_set_as_output(uint8_t port, uint8_t pin);
 
 void wntr_gpio_set_as_input(uint8_t port, uint8_t pin, bool pullup);

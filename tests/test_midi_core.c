@@ -4,7 +4,7 @@
     Full text available at: https://opensource.org/licenses/MIT
 */
 
-/* Tests for src/lib/gem_midi_core.c */
+/* Tests for src/wntr_midi_core.c */
 
 #include "libwinter_test.h"
 #include "wntr_midi_core.h"
