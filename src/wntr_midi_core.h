@@ -13,23 +13,39 @@
    only thing Gemini uses MIDI for.
 */
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-/*
-   Should be called at least once per millisecond to process outstanding
-   MIDI messages.
-*/
-void wntr_midi_task();
+enum USBMIDICodeIndexes {
+    MIDI_CODE_INDEX_RESERVED_0x0 = 0x0,
+    MIDI_CODE_INDEX_RESERVED_0x1 = 0x1,
+    MIDI_CODE_INDEX_TWO_BYTE_COMMON = 0x2,
+    MIDI_CODE_INDEX_THREE_BYTE_COMMON = 0x3,
+    MIDI_CODE_INDEX_SYSEX_START_OR_CONTINUE = 0x4,
+    MIDI_CODE_INDEX_SYSEX_END_ONE_BYTE = 0x5,
+    MIDI_CODE_INDEX_SYSEX_END_TWO_BYTE = 0x6,
+    MIDI_CODE_INDEX_SYSEX_END_THREE_BYTE = 0x7,
+    MIDI_CODE_INDEX_NOTE_OFF = 0x8,
+    MIDI_CODE_INDEX_NOTE_ON = 0x9,
+    MIDI_CODE_INDEX_POLY_KEY_PRESS = 0xA,
+    MIDI_CODE_INDEX_CONTROL_CHANGE = 0xB,
+    MIDI_CODE_INDEX_PROGRAM_CHANGE = 0xC,
+    MIDI_CODE_INDEX_CHANNEL_PRESSURE = 0xD,
+    MIDI_CODE_INDEX_PITCH_BEND = 0xE,
+    MIDI_CODE_INDEX_UNPARSED_SINGLE_BYTE = 0xF
+};
 
-/*
-   Register a callback to handle SysEx messages.
-*/
-typedef void (*wntr_midi_sysex_callback)(const uint8_t*, size_t);
-void wntr_midi_set_sysex_callback(wntr_midi_sysex_callback callback);
+struct WntrMIDIMessage {
+    uint8_t cable : 4;
+    uint8_t code_index : 4;
+    uint8_t midi_0;
+    uint8_t midi_1;
+    uint8_t midi_2;
+};
 
-/*
-   Send a sysex message. The data should not contain the start and end byte,
-   this function will add it automatically.
-*/
+/* TODO */
+bool wntr_midi_task(struct WntrMIDIMessage* msg);
+size_t wntr_midi_sysex_len();
+const uint8_t* wntr_midi_sysex_data();
 void wntr_midi_send_sysex(const uint8_t* data, size_t len);
