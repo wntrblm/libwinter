@@ -7,45 +7,8 @@
 /* Tests for src/wntr_midi_core.c */
 
 #include "libwinter_test.h"
+#include "midi_stub.h"
 #include "wntr_midi_core.h"
-#include "wntr_sysex_dispatcher.h"
-
-static uint8_t usb_midi_in_packets[1024];
-static size_t usb_midi_in_packets_idx = 0;
-static uint8_t usb_midi_out_packets[1024];
-static size_t usb_midi_out_packets_idx = 0;
-
-bool tud_midi_n_receive(uint8_t idx, uint8_t packet[4]) {
-    (void)(idx);
-
-    if (usb_midi_in_packets[usb_midi_in_packets_idx] == 0) {
-        return false;
-    }
-    packet[0] = usb_midi_in_packets[usb_midi_in_packets_idx];
-    packet[1] = usb_midi_in_packets[usb_midi_in_packets_idx + 1];
-    packet[2] = usb_midi_in_packets[usb_midi_in_packets_idx + 2];
-    packet[3] = usb_midi_in_packets[usb_midi_in_packets_idx + 3];
-    usb_midi_in_packets_idx += 4;
-    fprintf(stderr, "Yielded packet 0x%02x 0x%02x 0x%02x 0x%02x\n", packet[0], packet[1], packet[2], packet[3]);
-    return true;
-}
-
-bool tud_midi_n_send(uint8_t idx, const uint8_t packet[4]) {
-    (void)(idx);
-    usb_midi_out_packets[usb_midi_out_packets_idx] = packet[0];
-    usb_midi_out_packets[usb_midi_out_packets_idx + 1] = packet[1];
-    usb_midi_out_packets[usb_midi_out_packets_idx + 2] = packet[2];
-    usb_midi_out_packets[usb_midi_out_packets_idx + 3] = packet[3];
-    usb_midi_out_packets_idx += 4;
-    return true;
-}
-
-void reset_midi() {
-    usb_midi_out_packets_idx = 0;
-    memset(usb_midi_out_packets, 0, ARRAY_LEN(usb_midi_out_packets));
-    usb_midi_in_packets_idx = 0;
-    memset(usb_midi_in_packets, 0, ARRAY_LEN(usb_midi_in_packets));
-}
 
 TEST_CASE_BEGIN(send_sysex_one)
     /* one byte -> single packet */
@@ -133,9 +96,9 @@ TEST_CASE_BEGIN(receive_sysex_simple)
     struct WntrMIDIMessage msg = {};
     wntr_midi_task(&msg);
 
-    /* Command callback should be invoked with just the data payload. */
     munit_assert_uint8(msg.code_index, ==, MIDI_CODE_INDEX_SYSEX_START_OR_CONTINUE);
 
+    /* The MIDI sysex data should just be the payload, no header/trailer. */
     const uint8_t expected[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     munit_assert_size(wntr_midi_sysex_len(), ==, ARRAY_LEN(expected));
@@ -145,7 +108,7 @@ TEST_CASE_END
 static void* setup_midi_tests(const MunitParameter params[], void* user_data) {
     (void)(params);
     (void)(user_data);
-    reset_midi();
+    reset_usb_midi();
     return NULL;
 }
 

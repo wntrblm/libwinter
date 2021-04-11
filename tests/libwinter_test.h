@@ -62,5 +62,6 @@ inline static void print_f16(const fix16_t val) {
 /* Suites */
 
 MunitSuite test_midi_core_suite;
+MunitSuite test_midi_sysex_suite;
 MunitSuite test_bezier_suite;
 MunitSuite test_bitbang_spi_suite;

@@ -22,7 +22,7 @@ SRCS = [
     "src/wntr_bezier.c",
     "src/wntr_error_correction.c",
     "src/wntr_midi_core.c",
-    "src/wntr_sysex_dispatcher.c",
+    "src/wntr_midi_sysex_dispatcher.c",
     "src/wntr_bitbang_spi.c",
     "third_party/libfixmath/fix16_str.c",
     "third_party/libfixmath/fix16.c",
