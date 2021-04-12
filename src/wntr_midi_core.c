@@ -39,9 +39,9 @@ bool wntr_midi_receive(struct WntrMIDIMessage* msg) {
     if (msg->code_index == MIDI_CODE_INDEX_SYSEX_START_OR_CONTINUE) {
         consume_sysex(msg);
         msg->code_index = MIDI_CODE_INDEX_SYSEX_START_OR_CONTINUE;
-        msg->midi_0 = 0;
-        msg->midi_1 = 0;
-        msg->midi_2 = 0;
+        msg->status = 0;
+        msg->data_0 = 0;
+        msg->data_1 = 0;
     }
 
     return true;
@@ -95,17 +95,17 @@ static bool midi_read(struct WntrMIDIMessage* msg) {
 
     msg->cable = packet[0] >> 4 & 0xF;
     msg->code_index = packet[0] & 0xF;
-    msg->midi_0 = packet[1];
-    msg->midi_1 = packet[2];
-    msg->midi_2 = packet[3];
+    msg->status = packet[1];
+    msg->data_0 = packet[2];
+    msg->data_1 = packet[3];
 
     return true;
 };
 
 static void consume_sysex(struct WntrMIDIMessage* msg) {
     /* Start message has 3 of the sysex bytes, skip the first (0xF0). */
-    sysex_data_[0] = msg->midi_1;
-    sysex_data_[1] = msg->midi_2;
+    sysex_data_[0] = msg->data_0;
+    sysex_data_[1] = msg->data_1;
     size_t data_index = 2;
 
     while (true) {
@@ -123,19 +123,19 @@ static void consume_sysex(struct WntrMIDIMessage* msg) {
 
         switch (msg->code_index) {
             case MIDI_CODE_INDEX_SYSEX_START_OR_CONTINUE:
-                sysex_data_[data_index++] = msg->midi_0;
-                sysex_data_[data_index++] = msg->midi_1;
-                sysex_data_[data_index++] = msg->midi_2;
+                sysex_data_[data_index++] = msg->status;
+                sysex_data_[data_index++] = msg->data_0;
+                sysex_data_[data_index++] = msg->data_1;
                 break;
 
             case MIDI_CODE_INDEX_SYSEX_END_THREE_BYTE:
-                sysex_data_[data_index++] = msg->midi_0;
-                sysex_data_[data_index++] = msg->midi_1;
+                sysex_data_[data_index++] = msg->status;
+                sysex_data_[data_index++] = msg->data_0;
                 /* Ignore last byte (0xF7) */
                 goto exit;
 
             case MIDI_CODE_INDEX_SYSEX_END_TWO_BYTE:
-                sysex_data_[data_index++] = msg->midi_0;
+                sysex_data_[data_index++] = msg->status;
                 /* Ignore last byte (0xF7) */
                 goto exit;
 
