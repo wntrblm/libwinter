@@ -34,7 +34,7 @@ TEST_CASE_BEGIN(basic_dispatch)
     memcpy(usb_midi_in_packets, midi_packets, ARRAY_LEN(midi_packets));
 
     struct WntrMIDIMessage msg = {};
-    wntr_midi_task(&msg);
+    wntr_midi_receive(&msg);
 
     munit_assert_uint8(msg.code_index, ==, MIDI_CODE_INDEX_SYSEX_START_OR_CONTINUE);
 

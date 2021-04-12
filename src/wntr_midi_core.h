@@ -7,10 +7,7 @@
 #pragma once
 
 /*
-   Core MIDI system with handlers and callbacks for incoming MIDI messages.
-
-   Presently this only really reacts to SysEx commands, since that's the
-   only thing Gemini uses MIDI for.
+   Core MIDI system.
 */
 
 #include <stdbool.h>
@@ -44,8 +41,26 @@ struct WntrMIDIMessage {
     uint8_t midi_2;
 };
 
-/* TODO */
-bool wntr_midi_task(struct WntrMIDIMessage* msg);
+/* Receive a MIDI message.
+
+Copies the received message into the given `msg`. If the message received was
+a sysex message, this function will consume all messages until the end of the
+sysex. Check for this by checking `msg->code_index == MIDI_CODE_INDEX_SYSEX_START_OR_CONTINUE`.
+You can then fetch the sysex data and len using `wntr_midi_sysex_data()` and
+`wntr_midi_sysex_len()`.
+
+Returns: true if a message was received, false otherwise.
+*/
+bool wntr_midi_receive(struct WntrMIDIMessage* msg);
+
+/* The length of the last recieved sysex message. */
 size_t wntr_midi_sysex_len();
+
+/* The data to the last recieved sysex message.
+
+Note that this is only guarenteed to be valid until the next call to
+`wntr_midi_receive`.
+
+*/
 const uint8_t* wntr_midi_sysex_data();
 void wntr_midi_send_sysex(const uint8_t* data, size_t len);

@@ -31,7 +31,7 @@ static size_t sysex_iterator_remaining(size_t len, size_t head);
 
 /* Public functions. */
 
-bool wntr_midi_task(struct WntrMIDIMessage* msg) {
+bool wntr_midi_receive(struct WntrMIDIMessage* msg) {
     if (midi_read(msg) == false) {
         return false;
     }
