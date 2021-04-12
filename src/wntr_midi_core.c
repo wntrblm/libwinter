@@ -47,6 +47,15 @@ bool wntr_midi_receive(struct WntrMIDIMessage* msg) {
     return true;
 }
 
+void wntr_midi_send(const struct WntrMIDIMessage* msg) {
+    uint8_t packet[] = {0, 0, 0, 0};
+    packet[0] = msg->cable << 4 | msg->code_index;
+    packet[1] = msg->status;
+    packet[2] = msg->data_0;
+    packet[3] = msg->data_1;
+    tud_midi_send(packet);
+}
+
 size_t wntr_midi_sysex_len() { return sysex_data_len_; }
 
 const uint8_t* wntr_midi_sysex_data() { return sysex_data_; }

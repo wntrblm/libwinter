@@ -8,7 +8,7 @@
 
 #include "libwinter_test.h"
 #include "midi_stub.h"
-#include "wntr_midi_core.h"
+#include "wntr_midi.h"
 
 TEST_CASE_BEGIN(send_sysex_one)
     /* one byte -> single packet */
@@ -112,6 +112,45 @@ static void* setup_midi_tests(const MunitParameter params[], void* user_data) {
     return NULL;
 }
 
+TEST_CASE_BEGIN(receive_channel_messages)
+    // clang-format off
+    const uint8_t midi_packets[] = {
+        0x9, 0x91, 64, 127,
+        0x8, 0x81, 64, 0,
+    };
+    // clang-format on
+
+    memcpy(usb_midi_in_packets, midi_packets, ARRAY_LEN(midi_packets));
+
+    struct WntrMIDIMessage msg = {};
+    wntr_midi_receive(&msg);
+
+    munit_assert_uint8(msg.code_index, ==, MIDI_CODE_INDEX_NOTE_ON);
+    munit_assert_uint8(wntr_midi_get_type(&msg), ==, MIDI_CHANNEL_NOTE_ON);
+    munit_assert_uint8(wntr_midi_get_channel(&msg), ==, 1);
+    munit_assert_uint8(msg.data_0, ==, 64);
+    munit_assert_uint8(msg.data_1, ==, 127);
+
+    wntr_midi_receive(&msg);
+
+    munit_assert_uint8(msg.code_index, ==, MIDI_CODE_INDEX_NOTE_OFF);
+    munit_assert_uint8(wntr_midi_get_type(&msg), ==, MIDI_CHANNEL_NOTE_OFF);
+    munit_assert_uint8(wntr_midi_get_channel(&msg), ==, 1);
+    munit_assert_uint8(msg.data_0, ==, 64);
+    munit_assert_uint8(msg.data_1, ==, 0);
+TEST_CASE_END
+
+TEST_CASE_BEGIN(send_channel_messages)
+    struct WntrMIDIMessage msg = {
+        .cable = 0, .code_index = MIDI_CODE_INDEX_NOTE_ON, .status = MIDI_CHANNEL_NOTE_ON, .data_0 = 64, .data_1 = 127};
+
+    wntr_midi_send(&msg);
+
+    const uint8_t expected[] = {0x9, 0x90, 64, 127};
+    print_hex(usb_midi_out_packets, ARRAY_LEN(expected));
+    munit_assert_memory_equal(ARRAY_LEN(expected), usb_midi_out_packets, expected);
+TEST_CASE_END
+
 static MunitTest test_suite_tests[] = {
     {.name = "send one byte sysex", .test = test_send_sysex_one, .setup = setup_midi_tests},
     {.name = "send two byte sysex", .test = test_send_sysex_two, .setup = setup_midi_tests},
@@ -119,6 +158,8 @@ static MunitTest test_suite_tests[] = {
     {.name = "send four byte sysex", .test = test_send_sysex_four, .setup = setup_midi_tests},
     {.name = "send multibyte sysex", .test = test_send_sysex_many, .setup = setup_midi_tests},
     {.name = "receive simple sysex", .test = test_receive_sysex_simple, .setup = setup_midi_tests},
+    {.name = "receive channel messages", .test = test_receive_channel_messages, .setup = setup_midi_tests},
+    {.name = "send channel messages", .test = test_send_channel_messages, .setup = setup_midi_tests},
     {.test = NULL},
 };
 

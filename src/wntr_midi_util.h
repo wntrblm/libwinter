@@ -39,11 +39,13 @@ enum WntrMIDIRealtimeMessages {
     MIDI_REALTIME_SYSTEM_RESET = 0xFF,
 };
 
-inline uint8_t wntr_midi_get_type(struct WntrMIDIMessage* msg) { return msg->status & 0xF0; }
-inline uint8_t wntr_midi_get_channel(struct WntrMIDIMessage* msg) { return msg->status & 0xF; }
+inline static uint8_t wntr_midi_get_type(struct WntrMIDIMessage* msg) { return msg->status & 0xF0; }
+inline static uint8_t wntr_midi_get_channel(struct WntrMIDIMessage* msg) { return msg->status & 0xF; }
 
-inline uint16_t wntr_midi_get_pitch_bend(struct WntrMIDIMessage* msg) { return (msg->data_1 << 7 | msg->data_0); }
+inline static uint16_t wntr_midi_get_pitch_bend(struct WntrMIDIMessage* msg) {
+    return (msg->data_1 << 7 | msg->data_0);
+}
 
-inline uint16_t wntr_midi_get_pitch_bend_u16(struct WntrMIDIMessage* msg) {
+inline static uint16_t wntr_midi_get_pitch_bend_u16(struct WntrMIDIMessage* msg) {
     return ((msg->data_1 << 7 | msg->data_0) << 2);
 }

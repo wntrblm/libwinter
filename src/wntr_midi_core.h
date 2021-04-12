@@ -53,6 +53,9 @@ Returns: true if a message was received, false otherwise.
 */
 bool wntr_midi_receive(struct WntrMIDIMessage* msg);
 
+/* Send a MIDI message. */
+void wntr_midi_send(const struct WntrMIDIMessage* msg);
+
 /* The length of the last recieved sysex message. */
 size_t wntr_midi_sysex_len();
 
