@@ -7,7 +7,7 @@
 #pragma once
 
 /*
-   A wrapper over bare SysEx messagse that allows mapping to specific "command"
+   A wrapper over bare SysEx messages that allows mapping to specific "command"
    handlers.
 
    For example, given the SysEx message:
