@@ -21,6 +21,7 @@ SRCS = [
     "src/wntr_assert.c",
     "src/wntr_bezier.c",
     "src/wntr_error_correction.c",
+    "src/wntr_ticks.c",
     "src/wntr_midi_core.c",
     "src/wntr_midi_sysex_dispatcher.c",
     "src/wntr_bitbang_spi.c",

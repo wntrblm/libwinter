@@ -7,9 +7,5 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-bool tud_midi_n_receive(uint8_t idx, uint8_t packet[4]);
-bool tud_midi_n_send(uint8_t idx, const uint8_t packet[4]);
-
-static inline bool tud_midi_receive(uint8_t packet[4]) { return tud_midi_n_receive(0, packet); }
-
-static inline bool tud_midi_send(uint8_t const packet[4]) { return tud_midi_n_send(0, packet); }
+bool tud_midi_packet_read(uint8_t packet[4]);
+bool tud_midi_packet_write(uint8_t const packet[4]);

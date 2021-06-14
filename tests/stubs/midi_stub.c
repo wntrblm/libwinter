@@ -5,9 +5,7 @@ size_t usb_midi_in_packets_idx = 0;
 uint8_t usb_midi_out_packets[1024];
 size_t usb_midi_out_packets_idx = 0;
 
-bool tud_midi_n_receive(uint8_t idx, uint8_t packet[4]) {
-    (void)(idx);
-
+bool tud_midi_packet_read(uint8_t packet[4]) {
     if (usb_midi_in_packets[usb_midi_in_packets_idx] == 0) {
         return false;
     }
@@ -20,8 +18,7 @@ bool tud_midi_n_receive(uint8_t idx, uint8_t packet[4]) {
     return true;
 }
 
-bool tud_midi_n_send(uint8_t idx, const uint8_t packet[4]) {
-    (void)(idx);
+bool tud_midi_packet_write(const uint8_t packet[4]) {
     usb_midi_out_packets[usb_midi_out_packets_idx] = packet[0];
     usb_midi_out_packets[usb_midi_out_packets_idx + 1] = packet[1];
     usb_midi_out_packets[usb_midi_out_packets_idx + 2] = packet[2];
