@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "munit.h"
+
 /* Common test macros and such. */
 
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
@@ -59,9 +61,33 @@ inline static void print_f16(const fix16_t val) {
 #define ASSERT_FIX16_GT(val, target) munit_assert_int32(val, >, F16(target));
 #define ASSERT_FIX16_LT(val, target) munit_assert_int32(val, <, F16(target));
 
+#undef munit_assert_double_equal
+#define munit_assert_double_equal(a, b, precision)                                                                     \
+    do {                                                                                                               \
+        const double munit_tmp_a_ = (a);                                                                               \
+        const double munit_tmp_b_ = (b);                                                                               \
+        const double munit_tmp_diff_ =                                                                                 \
+            ((munit_tmp_a_ - munit_tmp_b_) < 0) ? -(munit_tmp_a_ - munit_tmp_b_) : (munit_tmp_a_ - munit_tmp_b_);      \
+        if (isnan(munit_tmp_diff_)) {                                                                                  \
+            munit_errorf("assertion failed: %s == %s, found NaN", #a, #b);                                             \
+        }                                                                                                              \
+        if (isinf(munit_tmp_diff_)) {                                                                                  \
+            munit_errorf("assertion failed: %s == %s, found Inf", #a, #b);                                             \
+        }                                                                                                              \
+        if (MUNIT_UNLIKELY(munit_tmp_diff_ > 1e-##precision)) {                                                        \
+            munit_errorf(                                                                                              \
+                "assertion failed: %s == %s (%0." #precision "g == %0." #precision "g)",                               \
+                #a,                                                                                                    \
+                #b,                                                                                                    \
+                munit_tmp_a_,                                                                                          \
+                munit_tmp_b_);                                                                                         \
+        }                                                                                                              \
+    } while (0);
+
 /* Suites */
 
 MunitSuite test_midi_core_suite;
 MunitSuite test_midi_sysex_suite;
 MunitSuite test_bezier_suite;
 MunitSuite test_bitbang_spi_suite;
+MunitSuite test_data_conv_suite;

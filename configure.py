@@ -20,6 +20,7 @@ SRCS = [
     "tests/**/*.c",
     "src/wntr_assert.c",
     "src/wntr_bezier.c",
+    "src/wntr_data_converter_helpers.c",
     "src/wntr_error_correction.c",
     "src/wntr_ticks.c",
     "src/wntr_midi_core.c",
