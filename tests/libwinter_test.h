@@ -91,3 +91,5 @@ MunitSuite test_midi_sysex_suite;
 MunitSuite test_bezier_suite;
 MunitSuite test_bitbang_spi_suite;
 MunitSuite test_data_conv_suite;
+MunitSuite test_smoothie_float_suite;
+MunitSuite test_smoothie_fix16_suite;

@@ -15,6 +15,8 @@ int main(int argc, char* argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
         test_bezier_suite,
         test_bitbang_spi_suite,
         test_data_conv_suite,
+        test_smoothie_float_suite,
+        test_smoothie_fix16_suite,
         {.prefix = NULL}};
     meta_suite.suites = suites;
     return munit_suite_main(&meta_suite, (void*)"libwinter", argc, argv);
