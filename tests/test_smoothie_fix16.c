@@ -9,7 +9,7 @@
 #include "libwinter_test.h"
 #include "wntr_smoothie_fix16.h"
 
-TEST_CASE_BEGIN(smoothie_low_pass_only)
+TEST_CASE_BEGIN(low_pass_only)
     struct WntrSmoothie smooth = {
         .cutoff = F16(1.0f),
         .sensitivity = F16(0.0f),
@@ -28,7 +28,7 @@ TEST_CASE_BEGIN(smoothie_low_pass_only)
     munit_assert_int32(WntrSmoothie_step(&smooth, F16(1.0f), F16(100.0f)), >, F16(90.0f));
 TEST_CASE_END
 
-TEST_CASE_BEGIN(smoothie_dynamic_filtering)
+TEST_CASE_BEGIN(dynamic_filtering)
     struct WntrSmoothie smooth = {
         .cutoff = F16(1.0f),
         .sensitivity = F16(0.01f),
@@ -55,14 +55,7 @@ TEST_CASE_BEGIN(smoothie_dynamic_filtering)
     munit_assert_double(WntrSmoothie_step(&smooth, F16(0.1f), F16(-0.05f)), >, F16(-0.03f));
 TEST_CASE_END
 
-static MunitTest test_suite_tests[] = {
-    {.name = "low pass only", .test = test_smoothie_low_pass_only},
-    {.name = "dynamic filtering", .test = test_smoothie_dynamic_filtering},
-    {.test = NULL},
-};
-
-MunitSuite test_smoothie_fix16_suite = {
-    .prefix = "smoothie (fix16): ",
-    .tests = test_suite_tests,
-    .iterations = 1,
-};
+TEST_SUITE_BEGIN
+    TEST_SUITE_TEST(low_pass_only, "low pass only")
+    TEST_SUITE_TEST(dynamic_filtering, "dynamic filtering")
+TEST_SUITE_END(smoothie_fix16)

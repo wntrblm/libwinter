@@ -151,20 +151,13 @@ TEST_CASE_BEGIN(send_channel_messages)
     munit_assert_memory_equal(ARRAY_LEN(expected), usb_midi_out_packets, expected);
 TEST_CASE_END
 
-static MunitTest test_suite_tests[] = {
-    {.name = "send one byte sysex", .test = test_send_sysex_one, .setup = setup_midi_tests},
-    {.name = "send two byte sysex", .test = test_send_sysex_two, .setup = setup_midi_tests},
-    {.name = "send three byte sysex", .test = test_send_sysex_three, .setup = setup_midi_tests},
-    {.name = "send four byte sysex", .test = test_send_sysex_four, .setup = setup_midi_tests},
-    {.name = "send multibyte sysex", .test = test_send_sysex_many, .setup = setup_midi_tests},
-    {.name = "receive simple sysex", .test = test_receive_sysex_simple, .setup = setup_midi_tests},
-    {.name = "receive channel messages", .test = test_receive_channel_messages, .setup = setup_midi_tests},
-    {.name = "send channel messages", .test = test_send_channel_messages, .setup = setup_midi_tests},
-    {.test = NULL},
-};
-
-MunitSuite test_midi_core_suite = {
-    .prefix = "midi core: ",
-    .tests = test_suite_tests,
-    .iterations = 1,
-};
+TEST_SUITE_BEGIN
+    TEST_SUITE_TEST(send_sysex_one, "send one byte sysex", .setup = setup_midi_tests)
+    TEST_SUITE_TEST(send_sysex_two, "send two byte sysex", .setup = setup_midi_tests)
+    TEST_SUITE_TEST(send_sysex_three, "send three byte sysex", .setup = setup_midi_tests)
+    TEST_SUITE_TEST(send_sysex_four, "send four byte sysex", .setup = setup_midi_tests)
+    TEST_SUITE_TEST(send_sysex_many, "send multibyte sysex", .setup = setup_midi_tests)
+    TEST_SUITE_TEST(receive_sysex_simple, "receive simple sysex", .setup = setup_midi_tests)
+    TEST_SUITE_TEST(receive_channel_messages, "receive channel messages", .setup = setup_midi_tests)
+    TEST_SUITE_TEST(send_channel_messages, "send channel messages", .setup = setup_midi_tests)
+TEST_SUITE_END(midi_core)

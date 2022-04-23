@@ -23,6 +23,20 @@
     return MUNIT_OK;                                                                                                   \
     }
 
+#define TEST_SUITE_BEGIN static MunitTest test_suite_tests[] = {
+
+#define TEST_SUITE_TEST(test_name, description, ...) {.name = #test_name, .test = test_##test_name, __VA_ARGS__},
+
+#define TEST_SUITE_END(name)                                                                                           \
+    {.test = NULL},                                                                                                    \
+    }                                                                                                                  \
+    ;                                                                                                                  \
+    MunitSuite test_##name##_suite = {                                                                                 \
+        .prefix = #name ": ",                                                                                          \
+        .tests = test_suite_tests,                                                                                     \
+        .iterations = 1,                                                                                               \
+    };
+
 /* Common includes */
 
 #include "fix16.h"

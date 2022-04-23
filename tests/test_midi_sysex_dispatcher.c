@@ -54,13 +54,6 @@ static void* setup_midi_tests(const MunitParameter params[], void* user_data) {
     return NULL;
 }
 
-static MunitTest test_suite_tests[] = {
-    {.name = "test basic dispatch", .test = test_basic_dispatch, .setup = setup_midi_tests},
-    {.test = NULL},
-};
-
-MunitSuite test_midi_sysex_suite = {
-    .prefix = "midi sysex: ",
-    .tests = test_suite_tests,
-    .iterations = 1,
-};
+TEST_SUITE_BEGIN
+    TEST_SUITE_TEST(basic_dispatch, "basic dispatch", .setup = setup_midi_tests)
+TEST_SUITE_END(midi_sysex)

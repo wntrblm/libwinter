@@ -48,14 +48,7 @@ TEST_CASE_BEGIN(random_length)
     }
 TEST_CASE_END
 
-static MunitTest test_suite_tests[] = {
-    {.name = "random data, fixed length", .test = test_fixed_length},
-    {.name = "random data, random length", .test = test_random_length},
-    {.test = NULL},
-};
-
-MunitSuite test_teeth_suite = {
-    .prefix = "teeth: ",
-    .tests = test_suite_tests,
-    .iterations = 1,
-};
+TEST_SUITE_BEGIN
+    TEST_SUITE_TEST(fixed_length, "random data, fixed length")
+    TEST_SUITE_TEST(random_length, "random data, random length")
+TEST_SUITE_END(teeth)

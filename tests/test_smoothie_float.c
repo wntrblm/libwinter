@@ -9,7 +9,7 @@
 #include "libwinter_test.h"
 #include "wntr_smoothie_float.h"
 
-TEST_CASE_BEGIN(smoothie_low_pass_only)
+TEST_CASE_BEGIN(low_pass_only)
     struct WntrSmoothie smooth = {
         .cutoff = 1.0f,
         .sensitivity = 0.0f,
@@ -28,7 +28,7 @@ TEST_CASE_BEGIN(smoothie_low_pass_only)
     munit_assert_double(WntrSmoothie_step(&smooth, 1.0f, 100.0f), >, 90.0f);
 TEST_CASE_END
 
-TEST_CASE_BEGIN(smoothie_dynamic_filtering)
+TEST_CASE_BEGIN(dynamic_filtering)
     struct WntrSmoothie smooth = {
         .cutoff = 1.0f,
         .sensitivity = 0.01f,
@@ -55,14 +55,7 @@ TEST_CASE_BEGIN(smoothie_dynamic_filtering)
     munit_assert_double(WntrSmoothie_step(&smooth, 0.1f, -0.05f), >, -0.03f);
 TEST_CASE_END
 
-static MunitTest test_suite_tests[] = {
-    {.name = "low pass only", .test = test_smoothie_low_pass_only},
-    {.name = "dynamic filtering", .test = test_smoothie_dynamic_filtering},
-    {.test = NULL},
-};
-
-MunitSuite test_smoothie_float_suite = {
-    .prefix = "smoothie (float): ",
-    .tests = test_suite_tests,
-    .iterations = 1,
-};
+TEST_SUITE_BEGIN
+    TEST_SUITE_TEST(low_pass_only, "low pass only")
+    TEST_SUITE_TEST(dynamic_filtering, "dynamic filtering")
+TEST_SUITE_END(smoothie_float)

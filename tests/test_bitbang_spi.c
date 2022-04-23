@@ -77,14 +77,7 @@ TEST_CASE_BEGIN(write)
     munit_assert_uint8(pull_byte(), ==, 0xFE);
 TEST_CASE_END
 
-static MunitTest test_suite_tests[] = {
-    {.name = "init", .test = test_init},
-    {.name = "write", .test = test_write},
-    {.test = NULL},
-};
-
-MunitSuite test_bitbang_spi_suite = {
-    .prefix = "bitbang SPI: ",
-    .tests = test_suite_tests,
-    .iterations = 1,
-};
+TEST_SUITE_BEGIN
+    TEST_SUITE_TEST(init, "init")
+    TEST_SUITE_TEST(write, "write")
+TEST_SUITE_END(bitbang_spi)
