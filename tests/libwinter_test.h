@@ -93,3 +93,4 @@ MunitSuite test_bitbang_spi_suite;
 MunitSuite test_data_conv_suite;
 MunitSuite test_smoothie_float_suite;
 MunitSuite test_smoothie_fix16_suite;
+MunitSuite test_teeth_suite;

@@ -18,6 +18,7 @@ PROGRAM = "test"
 
 SRCS = [
     "tests/**/*.c",
+    "src/teeth.c",
     "src/wntr_assert.c",
     "src/wntr_bezier.c",
     "src/wntr_data_converter_helpers.c",
