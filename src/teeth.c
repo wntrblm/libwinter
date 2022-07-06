@@ -6,7 +6,7 @@
 
 #include "teeth.h"
 
-void teeth_encode(const uint8_t* src, size_t src_len, uint8_t* dst) {
+size_t teeth_encode(const uint8_t* src, size_t src_len, uint8_t* dst) {
     size_t src_idx = 0;
     size_t dst_idx = 0;
 
@@ -31,7 +31,8 @@ void teeth_encode(const uint8_t* src, size_t src_len, uint8_t* dst) {
             dst[dst_idx + 1] = src[src_idx] & 0x7F;
             dst[dst_idx + 2] = src[src_idx + 1] & 0x7F;
             dst[dst_idx + 3] = src[src_idx + 2] & 0x7F;
-            dst_idx += 4;
+            dst[dst_idx + 4] = 0x00;
+            dst_idx += 5;
             src_idx += 3;
         }
         // There's only 2 bytes left
@@ -39,19 +40,26 @@ void teeth_encode(const uint8_t* src, size_t src_len, uint8_t* dst) {
             dst[dst_idx] = 0x20 | ((src[src_idx] & 0x80) >> 4) | ((src[src_idx + 1] & 0x80) >> 5);
             dst[dst_idx + 1] = src[src_idx] & 0x7F;
             dst[dst_idx + 2] = src[src_idx + 1] & 0x7F;
-            dst_idx += 3;
+            dst[dst_idx + 3] = 0x00;
+            dst[dst_idx + 4] = 0x00;
+            dst_idx += 5;
             src_idx += 2;
         }
         // There's only 1 byte left
         else if (src_idx + 1 == src_len) {
             dst[dst_idx] = 0x10 | ((src[src_idx] & 0x80) >> 4);
             dst[dst_idx + 1] = src[src_idx] & 0x7F;
+            dst[dst_idx + 2] = 0x00;
+            dst[dst_idx + 3] = 0x00;
+            dst[dst_idx + 4] = 0x00;
             dst_idx += 2;
             src_idx += 1;
         } else {
             break;
         }
     }
+
+    return dst_idx + 1;
 }
 
 size_t teeth_decode(const uint8_t* src, size_t src_len, uint8_t* dst) {
@@ -71,3 +79,49 @@ size_t teeth_decode(const uint8_t* src, size_t src_len, uint8_t* dst) {
 
     return dst_idx;
 }
+
+#ifdef TEETH_TEST
+
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+int main(int argc, char* argv[]) {
+    printf("Teeth encode/decode tests\n");
+
+    srand(time(NULL));
+
+    uint8_t source_buf[128];
+    uint8_t dest_buf[TEETH_ENCODED_LENGTH(128)];
+    uint8_t result_buf[128];
+
+    printf("Random data, fixed length buffers...");
+    for (size_t n = 0; n < 100; n++) {
+        for (size_t i = 0; i < 128; i++) { source_buf[i] = (uint8_t)rand(); }
+
+        teeth_encode(source_buf, 128, dest_buf);
+        teeth_decode(dest_buf, TEETH_ENCODED_LENGTH(128), result_buf);
+
+        assert(memcmp(source_buf, result_buf, 128) == 0);
+    }
+    printf("ok!\n");
+
+    printf("Random data, random length buffers...");
+    for (size_t n = 0; n < 100; n++) {
+        size_t len = rand() % 128;
+        for (size_t i = 0; i < len; i++) { source_buf[i] = (uint8_t)rand(); }
+
+        teeth_encode(source_buf, len, dest_buf);
+        teeth_decode(dest_buf, TEETH_ENCODED_LENGTH(len), result_buf);
+
+        assert(memcmp(source_buf, result_buf, len) == 0);
+    }
+
+    printf("ok!\n");
+
+    printf("All done :)\n");
+}
+
+#endif
